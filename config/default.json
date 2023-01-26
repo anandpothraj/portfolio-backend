@@ -1,0 +1,11 @@
+{
+    "mongoURI": "mongodb+srv://anand:anandpothraj@cluster0.w7jzzt9.mongodb.net/?retryWrites=true&w=majority",
+    "frontend_url": {
+        "development": "http://localhost:4200",
+        "production": "https://pothrajanand.netlify.app"
+    },
+    "nodemailer": {
+        "username": "anandpothraj11052001@gmail.com",
+        "password": "eiegizleowbnffzb"
+    }
+}

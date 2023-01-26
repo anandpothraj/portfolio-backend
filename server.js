@@ -1,9 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const config = require("config");
-
 const cors = require("cors");
-
 const app = express();
 
 app.use(
@@ -16,11 +14,8 @@ app.use(express.json());
 
 const db = config.get("mongoURI");
 
-mongoose
-  .connect(db, {
-    useNewUrlParser: true,
-    // useCreateIndex: true
-  })
+mongoose.set("strictQuery", false);
+mongoose.connect(db, {useNewUrlParser: true})
   .then(() => {
     console.log(`MongoDB connected...`);
   })
@@ -34,10 +29,7 @@ app.get("/", (req, res) => {
   res.status(200).send("Hello servers is running").end();
 });
 
-app.use("/api/users", require("./api/users"));
-app.use("/api/auth", require("./api/auth"));
-app.use("/api/userDetails", require("./api/userDetails"));
-app.use("/api/otp", require("./api/userRegistrationOTP"));
+app.use("/api/contact", require("./api/contact"));
 
 app.listen(port, () => {
   console.log(`Server started and listening onn port: ${port}`);
