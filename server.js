@@ -1,11 +1,12 @@
 const express = require("express");
-const config = require("config");
+const config = require("./config/default.json");
 const cors = require("cors");
 const app = express();
 
 var allowedOrigins = [
-  config.get("frontend_url.production"),
-  "frontend_url.development","frontend_url.local"
+  config.frontend_url.local,
+  config.frontend_url.development,
+  config.frontend_url.production
 ];
 
 app.use(
