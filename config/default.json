@@ -1,7 +1,7 @@
 {
     "frontend_url": {
         "local" : "http://localhost:3000",
-        "development": "https://development-anandpothraj.netlify.app/",
+        "development": "https://development-anandpothraj.netlify.app",
         "production": "https://pothrajanand.netlify.app"
     },
     "nodemailer": {
