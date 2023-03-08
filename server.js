@@ -1,7 +1,12 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const config = require("./config/default.json");
 const cors = require("cors");
 const app = express();
+
+var bodyParser = require('body-parser');
+app.use(bodyParser.json({limit: "7mb"}));
+app.use(bodyParser.urlencoded({limit: "7mb", extended: true, parameterLimit:7000}))
 
 var allowedOrigins = [
   config.frontend_url.local,
@@ -28,12 +33,27 @@ app.use(
 
 app.use(express.json());
 
+const db = config.mongoURI;
+
+mongoose
+  .connect(db, {
+    useNewUrlParser: true,
+    // useCreateIndex: true
+  })
+  .then(() => {
+    console.log(`MongoDB connected...`);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
 const port = process.env.PORT || 6678;
 
 app.get("/", (req, res) => {
   res.status(200).send("Hello server is running").end();
 });
 
+app.use("/api/users", require("./api/users"));
 app.use("/api/contact", require("./api/contact"));
 
 app.listen(port, () => {
