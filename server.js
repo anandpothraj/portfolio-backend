@@ -1,6 +1,6 @@
+require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose");
-const config = require("./config/default.json");
 const cors = require("cors");
 const app = express();
 
@@ -9,9 +9,9 @@ app.use(bodyParser.json({limit: "7mb"}));
 app.use(bodyParser.urlencoded({limit: "7mb", extended: true, parameterLimit:7000}))
 
 var allowedOrigins = [
-  config.frontend_url.local,
-  config.frontend_url.development,
-  config.frontend_url.production
+  process.env.FRONTEND_URL_LOCAL,
+  process.env.FRONTEND_URL_DEVELOPMENT,
+  process.env.FRONTEND_URL_PRODUCTION
 ];
 
 app.use(
@@ -33,7 +33,7 @@ app.use(
 
 app.use(express.json());
 
-const db = config.mongoURI;
+const db = process.env.MONGO_URI;
 
 mongoose
   .connect(db, {
@@ -55,6 +55,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/visits", require("./api/visits"));
 app.use("/api/contact", require("./api/contact"));
+// app.use("/api/auth", require("./api/auth"));
 
 app.listen(port, () => {
   console.log(`Server started and listening onn port: ${port}`);
