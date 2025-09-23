@@ -56,6 +56,7 @@ app.get("/", (req, res) => {
 app.use("/api/visits", require("./api/visits"));
 app.use("/api/contact", require("./api/contact"));
 app.use("/api/projects", require("./api/projects"));
+app.use("/api/testimonials", require("./api/testimonials"));
 // app.use("/api/auth", require("./api/auth"));
 
 app.listen(port, () => {
