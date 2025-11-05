@@ -53,6 +53,7 @@ app.get("/", (req, res) => {
   res.status(200).send("Hello server is running").end();
 });
 
+app.use("/api/chat", require("./api/chats"));
 app.use("/api/visits", require("./api/visits"));
 app.use("/api/contact", require("./api/contact"));
 app.use("/api/projects", require("./api/projects"));
