@@ -1,7 +1,11 @@
 const express = require("express");
 const { OpenAI } = require("openai");
+const fetch = require("node-fetch");
 const router = express.Router();
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ 
+    apiKey: process.env.OPENAI_API_KEY,
+    fetch: fetch
+});
 
 router.post("/chatkitToken", async (_req, res) => {
     try {
