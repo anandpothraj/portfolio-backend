@@ -2,6 +2,7 @@ const express = require("express");
 const { OpenAI } = require("openai");
 const fetch = require("node-fetch");
 const { Headers, Request, Response } = require("node-fetch");
+const FormData = require("form-data");
 
 // Polyfill globals for Node.js 14
 if (typeof globalThis.fetch === "undefined") {
@@ -15,6 +16,9 @@ if (typeof globalThis.Request === "undefined") {
 }
 if (typeof globalThis.Response === "undefined") {
     globalThis.Response = Response;
+}
+if (typeof globalThis.FormData === "undefined") {
+    globalThis.FormData = FormData;
 }
 
 const router = express.Router();
