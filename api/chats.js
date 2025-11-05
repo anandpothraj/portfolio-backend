@@ -1,10 +1,25 @@
 const express = require("express");
 const { OpenAI } = require("openai");
 const fetch = require("node-fetch");
+const { Headers, Request, Response } = require("node-fetch");
+
+// Polyfill globals for Node.js 14
+if (typeof globalThis.fetch === "undefined") {
+    globalThis.fetch = fetch;
+}
+if (typeof globalThis.Headers === "undefined") {
+    globalThis.Headers = Headers;
+}
+if (typeof globalThis.Request === "undefined") {
+    globalThis.Request = Request;
+}
+if (typeof globalThis.Response === "undefined") {
+    globalThis.Response = Response;
+}
+
 const router = express.Router();
 const openai = new OpenAI({ 
-    apiKey: process.env.OPENAI_API_KEY,
-    fetch: fetch
+    apiKey: process.env.OPENAI_API_KEY
 });
 
 router.post("/chatkitToken", async (_req, res) => {
