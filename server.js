@@ -11,21 +11,25 @@ app.use(bodyParser.urlencoded({limit: "7mb", extended: true, parameterLimit:7000
 var allowedOrigins = [
   process.env.FRONTEND_URL_LOCAL,
   process.env.FRONTEND_URL_DEVELOPMENT,
-  process.env.FRONTEND_URL_PRODUCTION
-];
+  process.env.FRONTEND_URL_PRODUCTION,
+  'http://localhost:3000',
+].filter(Boolean);
+
+function originAllowed(origin) {
+  if (!origin) return true;
+  var normalized = origin.replace(/\/$/, '');
+  if (allowedOrigins.some(function (allowed) {
+    return allowed && (allowed === origin || allowed.replace(/\/$/, '') === normalized);
+  })) return true;
+  if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/?$/i.test(origin)) return true;
+  return false;
+}
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) === -1) {
-        var msg =
-          "The CORS policy for this site does not " +
-          "allow access from the specified Origin.";
-        return callback(new Error(msg), false);
-      }
-      return callback(null, true);
+      if (originAllowed(origin)) return callback(null, true);
+      callback(null, false);
     },
     credentials: true,
   })
@@ -58,6 +62,7 @@ app.use("/api/visits", require("./api/visits"));
 app.use("/api/contact", require("./api/contact"));
 app.use("/api/projects", require("./api/projects"));
 app.use("/api/testimonials", require("./api/testimonials"));
+app.use("/api/kollect", require("./api/kollect"));
 // app.use("/api/auth", require("./api/auth"));
 
 app.listen(port, () => {
