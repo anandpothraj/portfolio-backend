@@ -1,5 +1,8 @@
 const express = require("express");
+const fetch = require("node-fetch");
 const router = express.Router();
+
+const AbortController = fetch.AbortController;
 
 const KOLLECT_BACKEND_URL = process.env.KOLLECT_BACKEND_URL
   ? process.env.KOLLECT_BACKEND_URL.replace(/\/$/, "")
