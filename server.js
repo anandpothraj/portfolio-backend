@@ -9,9 +9,7 @@ app.use(bodyParser.json({limit: "7mb"}));
 app.use(bodyParser.urlencoded({limit: "7mb", extended: true, parameterLimit:7000}))
 
 var allowedOrigins = [
-  process.env.FRONTEND_URL_LOCAL,
-  process.env.FRONTEND_URL_DEVELOPMENT,
-  process.env.FRONTEND_URL_PRODUCTION,
+  process.env.FRONTEND_URL,
   'http://localhost:3000',
 ].filter(Boolean);
 
