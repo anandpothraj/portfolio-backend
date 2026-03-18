@@ -4,6 +4,9 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
 
+// Kollect payment webhook (must be before body parser so raw body is available for signature verification)
+app.use("/kollect", require("./api/kollect-webhook"));
+
 var bodyParser = require('body-parser');
 app.use(bodyParser.json({limit: "7mb"}));
 app.use(bodyParser.urlencoded({limit: "7mb", extended: true, parameterLimit:7000}))
@@ -55,6 +58,7 @@ app.get("/", (req, res) => {
   res.status(200).send("Hello server is running").end();
 });
 
+app.use("/api/kollect/s2s", require("./routes/kollect-s2s.routes"));
 app.use("/api/visits", require("./api/visits"));
 app.use("/api/contact", require("./api/contact"));
 app.use("/api/projects", require("./api/projects"));
