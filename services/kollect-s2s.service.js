@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const fetch = require("node-fetch");
+const KollectPayment = require("../models/kollectPaymentModel");
 
 function sha256Hex(buf) {
   return crypto.createHash("sha256").update(buf).digest("hex");
@@ -61,6 +62,29 @@ async function createPayment(invoiceDetails) {
     err.data = data;
     throw err;
   }
+
+  // Persist a "pending" payment row so the webhook can update it later.
+  // We intentionally store the raw request + response for easier reconciliation.
+  const paymentId = data?.paymentId ?? data?.data?.paymentId ?? data?.result?.paymentId;
+  const invoiceId = data?.invoiceId ?? data?.data?.invoiceId ?? data?.result?.invoiceId;
+  const invoiceNumber =
+    data?.invoiceNumber ?? data?.data?.invoiceNumber ?? data?.result?.invoiceNumber;
+  const paymentUrl = data?.paymentUrl ?? data?.data?.paymentUrl ?? data?.result?.paymentUrl;
+  const amount = data?.amount ?? data?.data?.amount ?? data?.result?.amount;
+  const currency = data?.currency ?? data?.data?.currency ?? data?.result?.currency;
+
+  await KollectPayment.create({
+    paymentId,
+    invoiceId,
+    invoiceNumber,
+    idempotencyKey,
+    paymentStatus: "pending",
+    paymentUrl,
+    amount,
+    currency,
+    invoiceRequest: invoiceDetails,
+    kollectCreatePaymentResponse: data,
+  });
 
   return { idempotencyKey, response: data };
 }
