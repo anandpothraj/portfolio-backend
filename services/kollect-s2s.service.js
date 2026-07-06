@@ -70,8 +70,13 @@ async function createPayment(invoiceDetails) {
   const invoiceNumber =
     data?.invoiceNumber ?? data?.data?.invoiceNumber ?? data?.result?.invoiceNumber;
   const paymentUrl = data?.paymentUrl ?? data?.data?.paymentUrl ?? data?.result?.paymentUrl;
-  const amount = data?.amount ?? data?.data?.amount ?? data?.result?.amount;
-  const currency = data?.currency ?? data?.data?.currency ?? data?.result?.currency;
+  // Kollect's create-payment response does not echo back amount/currency,
+  // so derive them from what we sent instead of reading nonexistent fields.
+  const amount = (invoiceDetails.items || []).reduce(
+    (total, item) => total + Number(item.quantity || 0) * Number(item.price || 0),
+    0
+  );
+  const currency = invoiceDetails.paymentCurrency;
 
   await KollectPayment.create({
     paymentId,
