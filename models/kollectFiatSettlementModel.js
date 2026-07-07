@@ -26,7 +26,6 @@ const kollectFiatSettlementSchema = mongoose.Schema(
     sourceCurrency: { type: String, trim: true },
 
     paymentUrl: { type: String, trim: true },
-    qrCode: { type: String },
 
     // Debug / audit
     fiatSettlementRequest: { type: mongoose.Schema.Types.Mixed },

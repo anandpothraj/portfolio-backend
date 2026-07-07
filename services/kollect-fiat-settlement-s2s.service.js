@@ -75,7 +75,6 @@ async function createFiatSettlement(fiatSettlementDetails) {
   const invoiceNumber =
     data?.invoiceNumber ?? data?.data?.invoiceNumber ?? data?.result?.invoiceNumber;
   const paymentUrl = data?.paymentUrl ?? data?.data?.paymentUrl ?? data?.result?.paymentUrl;
-  const qrCode = data?.qrCode ?? data?.data?.qrCode ?? data?.result?.qrCode;
 
   await KollectFiatSettlement.create({
     paymentId,
@@ -84,7 +83,6 @@ async function createFiatSettlement(fiatSettlementDetails) {
     idempotencyKey,
     paymentStatus: "new",
     paymentUrl,
-    qrCode,
     senderWalletAddress: fiatSettlementDetails.senderWalletAddress,
     amount: fiatSettlementDetails.amount,
     targetCurrency: fiatSettlementDetails.targetCurrency,
