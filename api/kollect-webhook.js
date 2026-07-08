@@ -10,6 +10,14 @@ router.post(
     const signature = req.headers["x-kollect-signature"];
     const secret = process.env.KOLLECT_WEBHOOK_SIGNING_SECRET;
 
+    // Diagnostic only — confirms Kollect now sends both the legacy unprefixed
+    // hex header (verified below, unchanged) and the new `sha256=`-prefixed
+    // header alongside it. Safe to remove once confirmed.
+    console.log("[Kollect webhook] Signature headers:", {
+      legacy: signature,
+      v2: req.headers["x-kollect-signature-v2"],
+    });
+
     if (!secret) {
       console.error("[Kollect webhook] KOLLECT_WEBHOOK_SIGNING_SECRET not set");
       return res.status(500).json({ success: false, error: "Webhook not configured" });
