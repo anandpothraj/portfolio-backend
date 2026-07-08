@@ -7,7 +7,11 @@ router.post(
   "/webhook/fiat-settlement",
   express.raw({ type: "application/json" }),
   async (req, res) => {
-    const signatureHeader = req.headers["x-kollect-signature"];
+    // Since the 2026-07 webhook unification, x-kollect-signature-v2 carries
+    // the "sha256="-prefixed HMAC and x-kollect-signature the raw hex (same
+    // as invoice_settlement). Prefer v2, fall back to the raw-hex header.
+    const signatureHeader =
+      req.headers["x-kollect-signature-v2"] || req.headers["x-kollect-signature"];
     const secret = process.env.KOLLECT_FIAT_WEBHOOK_SIGNING_SECRET;
 
     if (!secret) {
@@ -28,9 +32,16 @@ router.post(
       .update(rawBody)
       .digest("hex");
 
-    // Unlike the invoice_settlement webhook, fiat_settlement signatures are
-    // prefixed with "sha256=".
-    if (signatureHeader !== `sha256=${expectedSignature}`) {
+    const receivedSignature = signatureHeader.startsWith("sha256=")
+      ? signatureHeader.slice("sha256=".length)
+      : signatureHeader;
+
+    const receivedBuf = Buffer.from(receivedSignature);
+    const expectedBuf = Buffer.from(expectedSignature);
+    if (
+      receivedBuf.length !== expectedBuf.length ||
+      !crypto.timingSafeEqual(receivedBuf, expectedBuf)
+    ) {
       console.warn("[Kollect fiat-settlement webhook] Invalid signature");
       return res.status(401).json({ success: false, error: "Invalid signature" });
     }
